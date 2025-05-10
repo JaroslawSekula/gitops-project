@@ -1,0 +1,10 @@
+pipeline {
+  agent any
+  stages {
+    stage('Plan') {
+      steps {
+        sh 'cd terraform/envs/dev && terragrunt plan'
+      }
+    }
+  }
+}

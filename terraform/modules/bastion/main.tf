@@ -17,6 +17,13 @@ resource "aws_security_group" "ec2_security_group" {
     cidr_blocks = [ "${chomp(data.http.my_ip.response_body)}/32" ]
   }
 
+  ingress {
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    cidr_blocks = [ "${chomp(data.http.my_ip.response_body)}/32" ]
+  }
+
   egress {
     from_port = 0
     to_port = 0
@@ -43,16 +50,24 @@ resource "aws_instance" "ec2_instance" {
                   yum update -y
                   aws ssm get-parameter --name "ssh_private_key" --with-decryption --output text --query "Parameter.Value" > /home/ec2-user/.ssh/id_rsa
                 
-                  yum install java-21-amazon-corretto-devel
                   yum install ansible -y
 
                   wget -O /etc/yum.repos.d/jenkins.repo \
                   https://pkg.jenkins.io/redhat-stable/jenkins.repo
                   rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-                  yum upgrade
-                  yum install fontconfig java-21-openjdk
-                  yum install jenkins
+                  yum upgrade -y
+                  yum install java-21-amazon-corretto-devel
+                  yum install jenkins -y
                   systemctl daemon-reload
+
+                  echo 'JENKINS_JAVA_OPTIONS="-Djenkins.install.runSetupWizard=false"' >> /etc/sysconfig/jenkins
+                  mkdir -p /var/lib/jenkins/init.groovy.d
+
+                  cd && git clone https://github.com/SkrytaModliszka/gitops-project && cd gitops-project/ansible/ && chmod +x dynamic_inventory.sh
+                  cd && mv gitops-project/jenkins/scripts/* /var/lib/jenkins/init.groovy.d/
+
+                  systemctl start jenkins
+                  systemctl enable jenkins
                 EOF
   
   tags = {

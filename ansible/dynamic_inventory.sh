@@ -43,12 +43,15 @@ done
 echo "{"
 echo "  \"_meta\": {"
 echo "    \"hostvars\": {"
+count=0
 for host in "${!HOSTVARS[@]}"; do
-  echo "      \"$host\": ${HOSTVARS[$host]},"
-done | sed '$ s/,$//'
+  ((count++))
+  comma=","
+  [[ $count -eq ${#HOSTVARS[@]} ]] && comma=""
+  echo "      \"$host\": ${HOSTVARS[$host]}$comma"
+done
 echo "    }"
 echo "  },"
-
 echo "  \"prod\": { \"hosts\": [${prod[*]}] },"
 echo "  \"dev\": { \"hosts\": [${dev[*]}] },"
 echo "  \"stage\": { \"hosts\": [${stage[*]}] }"
