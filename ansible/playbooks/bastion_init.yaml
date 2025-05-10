@@ -1,6 +1,7 @@
 ---
 - name: Configure BastionHost instance for Jenkins
-  hosts: all
+  hosts: localhost
+  connection: local
   become: true
 
   vars:

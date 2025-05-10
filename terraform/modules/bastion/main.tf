@@ -46,10 +46,10 @@ resource "aws_instance" "ec2_instance" {
   iam_instance_profile = var.instance_profile
     
   user_data = <<-EOF
-                  #!/bin/bash
+                  #!/bin/bash       
                   yum install ansible -y
-                  cd /home/ec2-user/ && git clone https://github.com/SkrytaModliszka/gitops-project.git
-                  ansible-playbook /gitops-project/ansible/playbooks/bastion_init.yaml -i localhost, --connection=local
+                  cd /home/ec2-user/ && git clone https://github.com/SkrytaModliszka/gitops-project.git && cd /home/ec2-user/gitops-project/ansible/playbooks
+                  ansible-playbook bastion_init.yaml
                 EOF
   
   tags = {
