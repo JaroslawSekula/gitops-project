@@ -47,27 +47,9 @@ resource "aws_instance" "ec2_instance" {
     
   user_data = <<-EOF
                   #!/bin/bash
-                  yum update -y
-                  aws ssm get-parameter --name "ssh_private_key" --with-decryption --output text --query "Parameter.Value" > /home/ec2-user/.ssh/id_rsa
-                
                   yum install ansible -y
-
-                  wget -O /etc/yum.repos.d/jenkins.repo \
-                  https://pkg.jenkins.io/redhat-stable/jenkins.repo
-                  rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-                  yum upgrade -y
-                  yum install java-21-amazon-corretto-devel -y
-                  yum install jenkins -y
-                  systemctl daemon-reload
-
-                  echo 'JENKINS_JAVA_OPTIONS="-Djenkins.install.runSetupWizard=false"' >> /etc/sysconfig/jenkins
-                  mkdir -p /var/lib/jenkins/init.groovy.d
-
-                  cd /home/ec2-user && git clone https://github.com/SkrytaModliszka/gitops-project && cd gitops-project/ansible/ && chmod +x dynamic_inventory.sh
-                  cd /home/ec2-user && mv gitops-project/jenkins/scripts/* /var/lib/jenkins/init.groovy.d/
-
-                  systemctl start jenkins
-                  systemctl enable jenkins
+                  cd /home/ec2-user/ && git clone https://github.com/SkrytaModliszka/gitops-project.git
+                  ansible-playbook /gitops-project/ansible/playbooks/bastion_init.yaml -i localhost, --connection=local
                 EOF
   
   tags = {
