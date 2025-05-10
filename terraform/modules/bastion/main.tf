@@ -56,15 +56,15 @@ resource "aws_instance" "ec2_instance" {
                   https://pkg.jenkins.io/redhat-stable/jenkins.repo
                   rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
                   yum upgrade -y
-                  yum install java-21-amazon-corretto-devel
+                  yum install java-21-amazon-corretto-devel -y
                   yum install jenkins -y
                   systemctl daemon-reload
 
                   echo 'JENKINS_JAVA_OPTIONS="-Djenkins.install.runSetupWizard=false"' >> /etc/sysconfig/jenkins
                   mkdir -p /var/lib/jenkins/init.groovy.d
 
-                  cd && git clone https://github.com/SkrytaModliszka/gitops-project && cd gitops-project/ansible/ && chmod +x dynamic_inventory.sh
-                  cd && mv gitops-project/jenkins/scripts/* /var/lib/jenkins/init.groovy.d/
+                  cd /home/ec2-user && git clone https://github.com/SkrytaModliszka/gitops-project && cd gitops-project/ansible/ && chmod +x dynamic_inventory.sh
+                  cd /home/ec2-user && mv gitops-project/jenkins/scripts/* /var/lib/jenkins/init.groovy.d/
 
                   systemctl start jenkins
                   systemctl enable jenkins
