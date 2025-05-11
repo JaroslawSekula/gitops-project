@@ -48,8 +48,8 @@ resource "aws_instance" "ec2_instance" {
   user_data = <<-EOF
                   #!/bin/bash       
                   yum install ansible -y
-                  cd /home/ec2-user/ && git clone https://github.com/SkrytaModliszka/gitops-project.git && cd /home/ec2-user/gitops-project/ansible/playbooks
-                  ansible-playbook bastion_init.yaml
+                  cd /home/ec2-user/ && git clone https://github.com/SkrytaModliszka/gitops-project.git
+                  ansible-playbook /home/ec2-user/gitops-project/ansible/playbooks/bastion_init.yaml
                 EOF
   
   tags = {

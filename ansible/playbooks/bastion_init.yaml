@@ -14,22 +14,19 @@
         name: "*"
         state: latest
 
-    - name: Pull SSH private key from SSM
-      command: >
-        aws ssm get-parameter
-        --name {{ ssh_private_key_param }}
-        --with-decryption
-        --output text
-        --query Parameter.Value
-      register: ssh_key_result
+    - name: Fetch SSH private key and write it directly to id_rsa
+      shell: |
+        aws ssm get-parameter \
+          --name {{ ssh_private_key_param }} \
+          --with-decryption \
+          --output text \
+          --query Parameter.Value \
+        > /home/ec2-user/.ssh/id_rsa && \
+        chown ec2-user:ec2-user /home/ec2-user/.ssh/id_rsa && \
+        chmod 600 /home/ec2-user/.ssh/id_rsa
+      args:
+        executable: /bin/bash
 
-    - name: Save private key to ~/.ssh/id_rsa
-      copy:
-        content: "{{ ssh_key_result.stdout }}"
-        dest: /home/ec2-user/.ssh/id_rsa
-        owner: ec2-user
-        group: ec2-user
-        mode: '0600'
 
     - name: Add Jenkins repo
       get_url:
