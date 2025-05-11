@@ -30,5 +30,6 @@ resource "aws_instance" "ec2_instance" {
   
   tags = {
     Name = "${var.env}_${var.ec2_name_tag}_instance"
+    Env = var.env
   }
 }

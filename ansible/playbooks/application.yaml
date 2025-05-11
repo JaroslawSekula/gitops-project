@@ -1,0 +1,109 @@
+---
+- name: Deploy latest version of vprofile-project
+  hosts: dev_app_instance
+  become: yes
+  tasks:
+    - name: Update all packages
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install dependencies for vprofile-project
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - java-11-amazon-corretto-devel
+        - maven
+        - git
+        - wget
+
+    - name: Create group for Tomcat
+      group:
+        name: tomcat
+        state: present
+
+    - name: Create user for Tomcat
+      user:
+        name: tomcat
+        group: tomcat
+        shell: /bin/false
+        create_home: yes
+        home: /opt/tomcat
+
+    - name: Download Tomcat archive
+      get_url:
+        url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.104/bin/apache-tomcat-9.0.104.tar.gz
+        dest: /tmp/apache-tomcat-9.0.104.tar.gz
+
+    - name: Extract Tomcat
+      unarchive:
+        src: /tmp/apache-tomcat-9.0.104.tar.gz
+        dest: /opt/tomcat
+        remote_src: yes
+        extra_opts: [--strip-components=1]
+        owner: tomcat
+        group: tomcat
+
+    - name: Create systemd unit for Tomcat
+      copy:
+        dest: /etc/systemd/system/tomcat.service
+        content: |
+          [Unit]
+          Description=Apache Tomcat Web Application Container
+          After=network.target
+
+          [Service]
+          Type=forking
+
+          Environment="JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto.x86_64"
+          Environment="CATALINA_PID=/opt/tomcat/temp/tomcat.pid"
+          Environment="CATALINA_HOME=/opt/tomcat"
+          Environment="CATALINA_BASE=/opt/tomcat"
+          Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED"
+          Environment="JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom"
+
+          ExecStart=/opt/tomcat/bin/startup.sh
+          ExecStop=/opt/tomcat/bin/shutdown.sh
+
+          User=tomcat
+          Group=tomcat
+          UMask=0007
+          RestartSec=10
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+    
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Clone git repository
+      git:
+        repo: https://github.com/SkrytaModliszka/gitops-project.git
+        dest: /home/ec2-user/
+        force: yes
+
+    - name: Build application using Maven
+      shell: mvn install
+      args:
+        chdir: /home/ec2-user/gitops-project/application/vprofile-project
+
+    - name: Remove default ROOT application
+      file:
+        path: /opt/tomcat/webapps/ROOT
+        state: absent
+    
+    - name: Copy vprofile.war to Tomcat webapps
+      copy:
+        source: /home/ec2-user/gitops-project/application/vprofile-project/target/vprofile.war
+        dest: /opt/tomcat/webapps/ROOT.war
+        owner: tomcat
+        group: tomcat
+
+    - name: Start and enable Tomcat Service
+      service:
+        name: tomcat
+        state: started
+        enabled: yes
