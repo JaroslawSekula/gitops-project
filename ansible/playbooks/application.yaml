@@ -33,12 +33,12 @@
 
     - name: Download Tomcat archive
       get_url:
-        url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.104/bin/apache-tomcat-9.0.104.tar.gz
-        dest: /tmp/apache-tomcat-9.0.104.tar.gz
+        url: https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.40/bin/apache-tomcat-10.1.40.tar.gz
+        dest: /tmp/apache-tomcat-10.1.40.tar.gz
 
     - name: Extract Tomcat
       unarchive:
-        src: /tmp/apache-tomcat-9.0.104.tar.gz
+        src: /tmp/apache-tomcat-10.1.40.tar.gz
         dest: /opt/tomcat
         remote_src: yes
         extra_opts: [--strip-components=1]
@@ -74,7 +74,7 @@
 
           [Install]
           WantedBy=multi-user.target
-    
+
     - name: Reload systemd
       systemd:
         daemon_reload: yes
@@ -82,7 +82,7 @@
     - name: Clone git repository
       git:
         repo: https://github.com/SkrytaModliszka/gitops-project.git
-        dest: /home/ec2-user/
+        dest: /home/ec2-user/gitops-project
         force: yes
 
     - name: Build application using Maven
@@ -94,13 +94,14 @@
       file:
         path: /opt/tomcat/webapps/ROOT
         state: absent
-    
+
     - name: Copy vprofile.war to Tomcat webapps
       copy:
-        source: /home/ec2-user/gitops-project/application/vprofile-project/target/vprofile.war
+        src: /home/ec2-user/gitops-project/application/vprofile-project/target/vprofile-v2.war
         dest: /opt/tomcat/webapps/ROOT.war
         owner: tomcat
         group: tomcat
+        remote_src: yes
 
     - name: Start and enable Tomcat Service
       service:
