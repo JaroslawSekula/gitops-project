@@ -1,0 +1,64 @@
+---
+- name: Prepare database instance to work with vprofile
+  hosts: dev_database_instance
+  become: yes
+
+  vars:
+    mysql_root_password: 'root123'
+    mysql_user_name: 'admin'
+    mysql_user_password: 'admin123'
+    db_name: 'accounts'
+    dump_file: '/home/ec2-user/gitops-project/application/vprofile-project/src/main/resources/db_backup.sql'
+
+  tasks:
+    - name: Update all packages
+      yum:
+        name: "*"
+        state: latest
+    
+    - name: Install mariadb
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+       - epel-release
+       - mariadb-server
+    
+    - name: Start and enable mariadb service
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+    - name: Clone git repository
+      git:
+        repo: https://github.com/SkrytaModliszka/gitops-project.git
+        dest: /home/ec2-user/gitops-project
+        force: yes
+
+    - name: Create database
+      ansible.builtin.shell: |
+        mysql -u root -p'{{ mysql_root_password }}' -e "CREATE DATABASE IF NOT EXISTS {{ db_name }};"
+      args:
+        executable: /bin/bash
+
+    - name: Restore database backup
+      ansible.builtin.shell: |
+        mysql -u root -p'{{ mysql_root_password }}' {{ db_name }} < {{ dump_file }}
+      args:
+        executable: /bin/bash
+
+    - name: Create admin user
+      ansible.builtin.shell: |
+        mysql -u root -p'{{ mysql_root_password }}' -e "
+        CREATE USER IF NOT EXISTS '{{ mysql_user_name }}'@'%' IDENTIFIED BY '{{ mysql_user_password }}';
+        GRANT ALL PRIVILEGES ON *.* TO '{{ mysql_user_name }}'@'%' WITH GRANT OPTION;
+        FLUSH PRIVILEGES;"
+      args:
+        executable: /bin/bash
+
+    - name: Restart mariadb
+      service:
+        name: mariadb
+        state: restarted
+

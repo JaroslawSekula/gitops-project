@@ -21,25 +21,47 @@ for row in $(echo "$INSTANCES" | jq -c '.[][]'); do
   name=$(echo "$row" | jq -r '.[1]')
   lname=$(echo "$name" | tr '[:upper:]' '[:lower:]')
 
-  # Pomiń bastiony
-  if [[ "$lname" == *bastionhost* || -z "$ip" || -z "$name" ]]; then
+  # Pomiń nieprawidłowe wpisy lub bastiony
+  if [[ -z "$ip" || -z "$name" || "$lname" == *bastionhost* ]]; then
     continue
   fi
 
   # Dodaj do hostvars
   HOSTVARS["$name"]="{\"ansible_host\": \"$ip\"}"
 
-  # Grupowanie
+  # Grupowanie wg nazwy
   if [[ "$lname" == *prod* ]]; then
-    prod+=("\"$name\"")
+    prod+=("$name")
   elif [[ "$lname" == *dev* ]]; then
-    dev+=("\"$name\"")
+    dev+=("$name")
   elif [[ "$lname" == *stage* ]]; then
-    stage+=("\"$name\"")
+    stage+=("$name")
   fi
 done
 
-# Budowa inventory JSON
+# Funkcja pomocnicza do formatowania tablicy jako JSON array
+join_array() {
+  local result=""
+  for item in "$@"; do
+    if [[ -n "$result" ]]; then
+      result+=","
+    fi
+    result+="\"$item\""
+  done
+  echo "$result"
+}
+
+# Zbuduj sekcje hostów
+prod_hosts=$(join_array "${prod[@]}")
+[[ -z "$prod_hosts" ]] && prod_hosts="" || prod_hosts="$prod_hosts"
+
+dev_hosts=$(join_array "${dev[@]}")
+[[ -z "$dev_hosts" ]] && dev_hosts="" || dev_hosts="$dev_hosts"
+
+stage_hosts=$(join_array "${stage[@]}")
+[[ -z "$stage_hosts" ]] && stage_hosts="" || stage_hosts="$stage_hosts"
+
+# Wypisz inventory w formacie JSON
 echo "{"
 echo "  \"_meta\": {"
 echo "    \"hostvars\": {"
@@ -52,7 +74,7 @@ for host in "${!HOSTVARS[@]}"; do
 done
 echo "    }"
 echo "  },"
-echo "  \"prod\": { \"hosts\": [${prod[*]}] },"
-echo "  \"dev\": { \"hosts\": [${dev[*]}] },"
-echo "  \"stage\": { \"hosts\": [${stage[*]}] }"
+echo "  \"prod\": { \"hosts\": [${prod_hosts}] },"
+echo "  \"dev\": { \"hosts\": [${dev_hosts}] },"
+echo "  \"stage\": { \"hosts\": [${stage_hosts}] }"
 echo "}"
