@@ -1,12 +1,16 @@
 ---
 - name: Install and setup RabbitMQ
   hosts: dev_rabbitmq_instance
+  remote_user: ubuntu
   become: yes
   tasks:
     - name: Update packages
-      yum:
+      apt:
         name: "*"
         state: latest
+
+    - name: Install RabbitMQ using script
+      script: /home/ec2-user/gitops-project/scripts/ubuntu_rabbit.sh
   
     - name: Start and enable RabbitMQ
       service:

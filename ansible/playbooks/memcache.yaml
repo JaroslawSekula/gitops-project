@@ -1,6 +1,6 @@
 ---
 - name: Install and setup memcache
-  hosts: dev_memcache_instance
+  hosts: dev_memcached_instance
   become: yes
   tasks:
   - name: Update packages
