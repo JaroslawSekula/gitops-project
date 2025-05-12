@@ -1,0 +1,27 @@
+---
+- name: Install and setup memcache
+  hosts: dev_memcache_instance
+  become: yes
+  tasks:
+  - name: Update packages
+    yum:
+     name: "*"
+     state: latest
+  
+  - name: Install memcache
+    yum:
+     name: memcached
+
+  - name: Start and enable memcache
+    service:
+     name: memcached
+     state: started
+     enabled: yes
+  
+  - name: Listen for every inbound
+    command: sed -i 's/127.0.0.1/0.0.0.0/g' /etc/sysconfig/memcached
+
+  - name: Restart memcache
+    service:
+     name: memcached
+     state: restarted

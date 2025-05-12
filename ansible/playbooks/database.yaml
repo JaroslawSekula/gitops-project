@@ -21,8 +21,8 @@
         name: "{{ item }}"
         state: present
       loop:
-       - epel-release
-       - mariadb-server
+       - mariadb105-server
+       - git
     
     - name: Start and enable mariadb service
       service:

@@ -1,0 +1,47 @@
+---
+- name: Install and setup RabbitMQ
+  hosts: dev_rabbitmq_instance
+  become: yes
+  tasks:
+    - name: Update packages
+      yum:
+        name: "*"
+        state: latest
+  
+    - name: Start and enable RabbitMQ
+      service:
+        name: rabbitmq-server
+        state: started
+        enabled: yes
+
+    - name: Set possibility to remote login for all rabbitmq users
+      copy:
+        dest: /etc/rabbitmq/rabbitmq.config
+        content: |
+          [{rabbit, [{loopback_users, []}]}].
+
+    - name: Enable rabit management plugin
+      rabbitmq_plugin:
+        name: rabbitmq_management
+        state: enabled
+
+    - name: Create user test
+      rabbitmq_user:
+        user: test
+        password: test
+        tags: administrator
+        state: present
+
+    - name: Set privileges for user test
+      rabbitmq_user:
+        user: test
+        permissions:
+          - vhost: /
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
+  
+    - name: Restart RabbitMQ
+      service:
+        name: rabbitmq-server
+        state: restarted
