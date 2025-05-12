@@ -30,6 +30,7 @@ resource "aws_lb" "alb" {
 
   tags = {
     Name = "${var.env}-alb"
+    Env = "${var.env}"
   }
 }
 

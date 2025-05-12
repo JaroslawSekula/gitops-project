@@ -1,6 +1,3 @@
-variable "public_key" {
-  
-}
 variable "security_group_vpc_id" {
   
 }
@@ -30,4 +27,7 @@ variable "ami" {
 }
 variable "key_name" {
   
+}
+variable "instance_profile" {
+  default = null
 }

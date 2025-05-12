@@ -3,7 +3,7 @@ terraform {
 }
 
 inputs = {
-    permissions = [ "ssm:GetParameter", "ssm:GetParameters", "ssm:GetParametersByPath", "ec2:DescribeInstances", "ec2:DescribeTags", "ec2:DescribeRegion" ]
+    permissions = [ "ssm:GetParameter", "ssm:GetParameters", "ssm:GetParametersByPath", "ec2:DescribeInstances", "ec2:DescribeTags", "ec2:DescribeRegion"]
     effect = "Allow"
     service = "ec2.amazonaws.com"
 }

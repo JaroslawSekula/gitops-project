@@ -103,6 +103,11 @@
         group: tomcat
         remote_src: yes
 
+    - name: Make dynamic_hosts.sh executable
+      file:
+        path: /home/ec2-user/gitops-project/scripts/dynamic_hosts.sh
+        mode: '0755'
+
     - name: Set /etc/hosts for application.properties
       script: /home/ec2-user/gitops-project/scripts/dynamic_hosts.sh us-east-1 dev
 

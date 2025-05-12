@@ -1,8 +1,3 @@
-resource "aws_key_pair" "key" {
-  key_name = "bastion-key"
-  public_key = var.public_key
-}
-
 data "http" "my_ip" {
   url = "https://checkip.amazonaws.com"
 }
@@ -41,16 +36,19 @@ resource "aws_instance" "ec2_instance" {
   instance_type = var.instance_type
   vpc_security_group_ids = [ aws_security_group.ec2_security_group.id ]
   subnet_id = var.ec2_subnet_id
-  key_name = aws_key_pair.key.key_name
+  key_name = var.key_name
   associate_public_ip_address = true
   iam_instance_profile = var.instance_profile
     
   user_data = <<-EOF
                   #!/bin/bash       
-                  yum install ansible -y
+                  yum install ansible nc -y
                   cd /home/ec2-user/ && git clone https://github.com/SkrytaModliszka/gitops-project.git
                   export ANSIBLE_HOST_KEY_CHECKING=False
-                  ansible-playbook /home/ec2-user/gitops-project/ansible/playbooks/*
+
+                  ansible-playbook /home/ec2-user/gitops-project/ansible/playbooks/bastion/bastion_init.yaml
+                  ansible-playbook -i /home/ec2-user/gitops-project/ansible/dynamic_inventory.sh /home/ec2-user/gitops-project/ansible/playbooks/app/*
+                
                 EOF
   
   tags = {

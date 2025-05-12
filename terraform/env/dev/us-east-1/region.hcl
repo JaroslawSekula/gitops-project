@@ -4,6 +4,14 @@ locals {
   key_name = "bastion-key"
 }
 
+dependencies {
+    paths = [
+        "${get_repo_root()}/terraform/env/shared/key",
+        "${get_repo_root()}/terraform/env/shared/backend"
+
+    ]
+}
+
 generate "provider" {
     path = "provider.tf"
     if_exists = "overwrite_terragrunt"

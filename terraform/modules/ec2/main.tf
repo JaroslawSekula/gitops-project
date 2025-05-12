@@ -30,6 +30,7 @@ resource "aws_instance" "ec2_instance" {
   key_name = var.key_name
   subnet_id = var.ec2_subnet_id
   associate_public_ip_address = false
+  iam_instance_profile = var.instance_profile
   
   tags = {
     Name = "${var.env}_${var.ec2_name_tag}_instance"

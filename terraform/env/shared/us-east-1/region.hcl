@@ -1,6 +1,7 @@
 locals {
   region   = "us-east-1"
   env = "shared"
+  key_name = "bastion-key"
 }
 
 generate "provider" {
@@ -17,6 +18,7 @@ inputs = {
     env = local.env
     region = local.region
     ami = "ami-0f88e80871fd81e91"
+    key_name = local.key_name
 }
 
 remote_state {
