@@ -1,6 +1,7 @@
 ---
 - name: Install and setup memcache
   hosts: dev_memcached_instance
+  remote_user: ec2-user
   become: yes
   tasks:
   - name: Update packages

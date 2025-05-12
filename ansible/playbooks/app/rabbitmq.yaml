@@ -36,7 +36,7 @@
         tags: administrator
         state: present
 
-    - name: Set privileges for user test
+    - name: Set privileges for test user
       rabbitmq_user:
         user: test
         permissions:

@@ -4,6 +4,10 @@ locals {
 
 dependency "profile" {
     config_path = "${get_repo_root()}/terraform/env/shared/policies/app"
+
+    mock_outputs = {
+          profile_output = "mock-profile-output"
+      }
 }
 
 dependencies {
