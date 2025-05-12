@@ -2,7 +2,7 @@
 - name: Configure BastionHost instance for Jenkins
   hosts: localhost
   connection: local
-  become: true
+  become: yes
 
   vars:
     jenkins_version: "2.504.1"
@@ -24,6 +24,15 @@
         > /home/ec2-user/.ssh/id_rsa && \
         chown ec2-user:ec2-user /home/ec2-user/.ssh/id_rsa && \
         chmod 600 /home/ec2-user/.ssh/id_rsa
+
+        aws ssm get-parameter \
+          --name {{ ssh_private_key_param }} \
+          --with-decryption \
+          --output text \
+          --query Parameter.Value \
+        > /root/.ssh/id_rsa && \
+        chown root:root /root/.ssh/id_rsa && \
+        chmod 600 /root/.ssh/id_rsa
       args:
         executable: /bin/bash
 

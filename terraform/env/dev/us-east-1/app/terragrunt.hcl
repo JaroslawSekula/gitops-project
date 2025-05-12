@@ -3,7 +3,7 @@ locals {
 }
 
 dependency "profile" {
-    config_path = "../../policies/app"
+    config_path = "${get_repo_root()}/terraform/env/shared/policies/app"
 }
 
 dependencies {
