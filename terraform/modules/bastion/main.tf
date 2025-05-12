@@ -50,7 +50,7 @@ resource "aws_instance" "ec2_instance" {
                   yum install ansible -y
                   cd /home/ec2-user/ && git clone https://github.com/SkrytaModliszka/gitops-project.git
                   export ANSIBLE_HOST_KEY_CHECKING=False
-                  ansible-playbook /home/ec2-user/gitops-project/ansible/playbooks/bastion_init.yaml
+                  ansible-playbook /home/ec2-user/gitops-project/ansible/playbooks/*
                 EOF
   
   tags = {

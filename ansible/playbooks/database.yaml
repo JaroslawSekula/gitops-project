@@ -57,6 +57,13 @@
       args:
         executable: /bin/bash
 
+    - name: Uncomment and set bind-address to 0.0.0.0
+      lineinfile:
+        path: /etc/my.cnf.d/mariadb-server.cnf
+        regexp: '^#?bind-address'
+        line: 'bind-address=0.0.0.0'
+        state: present
+
     - name: Restart mariadb
       service:
         name: mariadb

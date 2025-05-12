@@ -15,6 +15,16 @@ resource "aws_subnet" "subnet" {
   }
 }
 
+resource "aws_subnet" "subnet_for_alb" {
+  vpc_id = aws_vpc.vpc.id
+  cidr_block = "10.0.10.0/28"
+  availability_zone = "us-east-1b"
+
+  tags = {
+    Name = "${var.env}_subnet_for_alb"
+  }
+}
+
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc.id
   

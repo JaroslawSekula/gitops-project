@@ -4,9 +4,8 @@ locals {
 
 dependencies {
     paths = [
-        "../../../shared/backend",
-        "../../../shared/us-east-1/bastion",
         "../database"
+
     ]
 }
 dependency "vpc" {
@@ -37,7 +36,20 @@ inputs = {
     ec2_subnet_id = dependency.vpc.outputs.private_subnet_id
     instance_type = "t2.micro"
     ec2_name_tag = "memcached"
-    ingress_cidr = dependency.shared_vpc.outputs.vpc_cidr
+    ingress_rules = [
+        {
+            from_port = 22
+            to_port = 22
+            protocol = "tcp"
+            cidr = dependency.shared_vpc.outputs.vpc_cidr
+        },
+        {
+            from_port = 11211
+            to_port = 11211
+            protocol = "tcp"
+            cidr = dependency.vpc.outputs.vpc_cidr
+        }
+    ]
     ami = local.region_vars.inputs.ami
     env = local.region_vars.inputs.env
     key_name = local.region_vars.inputs.key_name

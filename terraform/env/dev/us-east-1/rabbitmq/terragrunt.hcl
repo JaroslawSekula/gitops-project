@@ -2,13 +2,6 @@ locals {
     region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))
 }
 
-dependencies {
-    paths = [
-        "../../../shared/backend",
-        "../../../shared/us-east-1/bastion",
-        "../database"
-    ]
-}
 dependency "vpc" {
     config_path = "../vpc"
     mock_outputs = {
@@ -37,7 +30,20 @@ inputs = {
     ec2_subnet_id = dependency.vpc.outputs.private_subnet_id
     instance_type = "t2.micro"
     ec2_name_tag = "rabbitmq"
-    ingress_cidr = dependency.shared_vpc.outputs.vpc_cidr
+    ingress_rules = [
+        {
+            from_port = 22
+            to_port = 22
+            protocol = "tcp"
+            cidr = dependency.shared_vpc.outputs.vpc_cidr
+        },
+        {
+            from_port = 5672
+            to_port = 5672
+            protocol = "tcp"
+            cidr = dependency.vpc.outputs.vpc_cidr
+        }
+    ]
     ami = "ami-084568db4383264d4"
     env = local.region_vars.inputs.env
     key_name = local.region_vars.inputs.key_name

@@ -6,7 +6,9 @@ dependencies {
     paths = [
         "../../../shared/backend",
         "../../../shared/us-east-1/bastion",
-        "../database"
+        "../database",
+        "../rabbitmq",
+        "../memcache"
     ]
 }
 dependency "vpc" {
@@ -37,7 +39,20 @@ inputs = {
     ec2_subnet_id = dependency.vpc.outputs.private_subnet_id
     instance_type = "t2.small"
     ec2_name_tag = "app"
-    ingress_cidr = dependency.shared_vpc.outputs.vpc_cidr
+    ingress_rules = [
+        {
+            from_port = 22
+            to_port = 22
+            protocol = "tcp"
+            cidr = dependency.shared_vpc.outputs.vpc_cidr
+        },
+        {
+            from_port = 8080
+            to_port = 8080
+            protocol = "tcp"
+            cidr = "0.0.0.0/0"
+        }
+    ]
     ami = local.region_vars.inputs.ami
     env = local.region_vars.inputs.env
     key_name = local.region_vars.inputs.key_name

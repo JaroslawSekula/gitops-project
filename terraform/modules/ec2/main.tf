@@ -1,11 +1,14 @@
 resource "aws_security_group" "ec2_security_group" {
   vpc_id = var.security_group_vpc_id
 
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = [ var.ingress_cidr ]
+  dynamic "ingress" {
+    for_each = var.ingress_rules
+    content {
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+      cidr_blocks = [ingress.value.cidr]
+    }
   }
 
   egress {
