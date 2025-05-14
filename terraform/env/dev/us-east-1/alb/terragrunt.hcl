@@ -4,14 +4,18 @@ locals {
 
 dependency "app" {
     config_path = "../app"
+    mock_outputs = {
+        id = "mock-app-id-284284"
+    }
 }
 dependency "vpc" {
     config_path = "../vpc"
     mock_outputs = {
-        vpc_id = "mock_vpc_293845"
-        subnet_id = "mock_subnet_294853"
+        subnet_ids = ["3852772", "3842857"]
+        vpc_id = "382757"
     }
-}
+
+    }
 
 terraform {
     source = "../../../../modules/alb"

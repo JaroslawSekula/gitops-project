@@ -4,10 +4,9 @@ locals {
 
 dependency "profile" {
     config_path = "${get_repo_root()}/terraform/env/shared/policies/app"
-
     mock_outputs = {
-          profile_output = "mock-profile-output"
-      }
+        profile = "mock-profile"
+    }
 }
 
 dependencies {
@@ -21,14 +20,19 @@ dependencies {
 dependency "vpc" {
     config_path = "../vpc"
     mock_outputs = {
-        vpc_id = "mock_vpc_293845"
-        subnet_id = "mock_subnet_294853"
+        vpc_output = "mock-vpc-output"
+        private_subnet_id = "4739385"
+        vpc_cidr = "0.0.0.0/0"
+        vpc_id = "382757"
     }
 }
 dependency "shared_vpc" {
     config_path = "../../../shared/${local.region_vars.inputs.region}/vpc"
     mock_outputs = {
-        vpc_cidr = "mock_vpc_cidr_2938472"
+        vpc_output = "mock-vpc-output"
+        private_subnet_id = "4739385"
+        vpc_cidr = "0.0.0.0/0"
+        vpc_id = "382757"
     }
 }
 

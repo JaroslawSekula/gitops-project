@@ -1,17 +1,19 @@
 dependency "shared_vpc"{
     config_path = "../../../shared/us-east-1/vpc"
     mock_outputs = {
-        vpc_id = "mock_vpc_587436"
-        route_table_id = "mock_route_table_346743"
-        vpc_cidr = "mock_vpc_cidr_474843"
+        shared_vpc_output = "mock-shared_vpc-output"
+        vpc_id = "995764"
+        route_table_id = "9957657"
+        vpc_cidr = "0.0.0.0/0"
     }
 }
 dependency "dev_vpc"{
     config_path = "../vpc"
     mock_outputs = {
-        vpc_id = "mock_vpc_287374"
-        route_table_id = "mock_route_table_28384"
-        vpc_cidr = "mock_vpc_cidr_93842"
+        dev_vpc_output = "mock-dev_vpc-output"
+        vpc_id = "995765"
+        private_route_table_id = "995765"
+        vpc_cidr = "0.0.0.0/0"
     }
 }
 

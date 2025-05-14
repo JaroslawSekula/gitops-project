@@ -7,12 +7,18 @@ dependencies {
 
 dependency "profile" {
     config_path = "../../policies/bastion"
+    mock_outputs = {
+        profile = "mock-profile"
+    }
 }
 dependency "vpc" {
     config_path = "../vpc"
     mock_outputs = {
-        vpc_id = "mock_vpc_38482"
-        subnet_id = "mock_subnet_284339"
+        subnet_id = "mock-subnet-id"
+        vpc_output = "mock-vpc-output"
+        private_subnet_id = "4739385"
+        vpc_cidr = "0.0.0.0/0"
+        vpc_id = "382757"
     }
 }
 locals {
