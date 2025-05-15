@@ -11,7 +11,7 @@ dependency "dev_vpc"{
     config_path = "../vpc"
     mock_outputs = {
         vpc_id = "995765"
-        private_route_table_id = "995765"
+        route_table_id = "995765"
         vpc_cidr = "0.0.0.0/0"
     }
 }
@@ -24,7 +24,7 @@ inputs = {
     vpc_id = dependency.dev_vpc.outputs.vpc_id
     peer_vpc_id = dependency.shared_vpc.outputs.vpc_id
 
-    vpc_route_table_id = dependency.dev_vpc.outputs.private_route_table_id
+    vpc_route_table_id = dependency.dev_vpc.outputs.route_table_id
     peer_route_table_id = dependency.shared_vpc.outputs.route_table_id
 
     vpc_cidr_block = dependency.dev_vpc.outputs.vpc_cidr
