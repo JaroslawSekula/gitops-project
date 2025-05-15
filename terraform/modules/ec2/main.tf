@@ -29,7 +29,7 @@ resource "aws_instance" "ec2_instance" {
   vpc_security_group_ids = [ aws_security_group.ec2_security_group.id ]
   key_name = var.key_name
   subnet_id = var.ec2_subnet_id
-  associate_public_ip_address = false
+  associate_public_ip_address = var.public_ip
   iam_instance_profile = var.instance_profile
   
   tags = {

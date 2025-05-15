@@ -31,3 +31,6 @@ variable "key_name" {
 variable "instance_profile" {
   default = null
 }
+variable "public_ip" {
+  default = false
+}

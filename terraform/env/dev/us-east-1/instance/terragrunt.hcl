@@ -42,8 +42,8 @@ inputs = {
             cidr = dependency.shared_vpc.outputs.vpc_cidr
         },
         {
-            from_port = 8080
-            to_port = 8080
+            from_port = 8081
+            to_port = 8081
             protocol = "tcp"
             cidr = "0.0.0.0/0"
         }
@@ -51,4 +51,5 @@ inputs = {
     ami = local.region_vars.inputs.ami
     env = local.region_vars.inputs.env
     key_name = local.region_vars.inputs.key_name
+    public_ip = true
 }
