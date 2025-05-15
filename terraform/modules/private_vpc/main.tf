@@ -18,7 +18,7 @@ resource "aws_subnet" "subnet" {
 
 resource "aws_subnet" "subnet_for_alb" {
   vpc_id = aws_vpc.vpc.id
-  cidr_block = "10.0.10.0/28"
+  cidr_block = var.alb_subnet_cidr
   availability_zone = "us-east-1b"
 
   tags = {

@@ -2,21 +2,6 @@ locals {
     region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))
 }
 
-dependency "profile" {
-    config_path = "${get_repo_root()}/terraform/env/shared/policies/app"
-    mock_outputs = {
-        profile = "mock-profile"
-    }
-}
-
-dependencies {
-    paths = [
-        "../../../shared/backend",
-        "../database",
-        "../rabbitmq",
-        "../memcache"
-    ]
-}
 dependency "vpc" {
     config_path = "../vpc"
     mock_outputs = {
@@ -66,5 +51,4 @@ inputs = {
     ami = local.region_vars.inputs.ami
     env = local.region_vars.inputs.env
     key_name = local.region_vars.inputs.key_name
-    instance_profile = dependency.profile.outputs.profile
 }

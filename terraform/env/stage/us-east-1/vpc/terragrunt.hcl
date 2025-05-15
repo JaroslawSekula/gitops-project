@@ -8,8 +8,8 @@ locals {
 
 inputs = {
     env = local.region_vars.inputs.env
-    vpc_cidr_block      =      "10.2.0.0/16"
-    subnet_cidr_block   =      "10.2.1.0/24"
-    private_subnet_cidr =      "10.2.2.0/24"
-    alb_subnet_cidr = "10.2.11.0/26"
+    vpc_cidr_block      =      "10.0.0.0/16"
+    subnet_cidr_block   =      "10.0.1.0/24"
+    private_subnet_cidr =      "10.0.2.0/24"
+    alb_subnet_cidr = "10.0.10.0/26"
 }

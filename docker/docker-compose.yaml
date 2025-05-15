@@ -1,0 +1,39 @@
+services:
+  vprodb:
+    build: 
+      context: ./db
+    image: vprocontainers/vprofiledb
+    container_name: vprodb
+    ports:
+      - "3306:3306"
+    volumes:
+      - vprodbdata:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+
+  vprocache:
+    image: memcached
+    ports:
+      - "11211:11211"
+
+  vpromq:
+    image: rabbitmq
+    ports:
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=test
+      - RABBITMQ_DEFAULT_PASS=test
+
+  vproapp:
+    build: 
+      context: ./app
+    image: vprocontainers/vprofileapp
+    container_name: vproapp
+    ports:
+      - "8080:8080"
+    volumes:
+      - vproappdata:/usr/local/tomcat/webapps
+
+volumes:
+   vprodbdata: {}
+   vproappdata: {}

@@ -1,7 +1,7 @@
 dependencies {
     paths = [
         "../../../shared/backend",
-        "../../../dev/us-east-1/alb"
+        "../../../stage/us-east-1/alb"
     ]
 }
 
