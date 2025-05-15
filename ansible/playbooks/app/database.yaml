@@ -1,6 +1,6 @@
 ---
 - name: Prepare database instance to work with vprofile
-  hosts: dev_database_instance
+  hosts: stage_database_instance
   remote_user: ec2-user
   become: yes
 

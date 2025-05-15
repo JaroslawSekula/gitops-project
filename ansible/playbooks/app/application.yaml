@@ -1,6 +1,6 @@
 ---
 - name: Deploy latest version of vprofile-project
-  hosts: dev_app_instance
+  hosts: stage_app_instance
   remote_user: ec2-user
   become: yes
   tasks:

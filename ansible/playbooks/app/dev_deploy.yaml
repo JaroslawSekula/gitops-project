@@ -1,0 +1,45 @@
+---
+- name: Deploy GitOps project with Docker Compose
+  hosts: dev_app_instance
+  become: yes
+
+  vars:
+    compose_path: /usr/local/bin/docker-compose
+    repo_url: https://github.com/SkrytaModliszka/gitops-project.git
+    repo_dir: /home/ec2-user/gitops-project
+    docker_dir: /home/ec2-user/gitops-project/docker
+
+  tasks:
+    - name: Ensure git is installed
+      yum:
+        name: git
+        state: present
+
+    - name: Clone Git repository
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ repo_dir }}"
+        version: HEAD
+        force: yes
+
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Enable and start Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Download Docker Compose binary
+      get_url:
+        url: "https://github.com/docker/compose/releases/latest/download/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
+        dest: "{{ compose_path }}"
+        mode: '0755'
+
+    - name: Run docker-compose up -d
+      command: docker-compose up -d
+      args:
+        chdir: "{{ docker_dir }}"
