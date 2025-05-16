@@ -8,6 +8,7 @@ dependency "vpc" {
         vpc_output = "mock-vpc-output"
         vpc_cidr = "0.0.0.0/0"
         vpc_id = "382757"
+        subnet_id = "mock-subnet-id"
     }
 }
 dependency "shared_vpc" {
@@ -16,6 +17,7 @@ dependency "shared_vpc" {
         vpc_output = "mock-vpc-output"
         vpc_cidr = "0.0.0.0/0"
         vpc_id = "382757"
+        subnet_id = "mock-subnet-id"
     }
 }
 
