@@ -1,6 +1,6 @@
 ---
 - name: Install and setup RabbitMQ
-  hosts: stage_rabbitmq_instance
+  hosts: "{{ env }}_rabbitmq_instance"
   remote_user: ubuntu
   become: yes
   tasks:

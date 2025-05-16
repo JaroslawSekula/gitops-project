@@ -1,6 +1,6 @@
 ---
 - name: Prepare database instance to work with vprofile
-  hosts: stage_database_instance
+  hosts: "{{ env }}_database_instance"
   remote_user: ec2-user
   become: yes
 
@@ -33,7 +33,7 @@
 
     - name: Clone git repository
       git:
-        repo: https://github.com/SkrytaModliszka/gitops-project.git
+        repo: https://github.com/JaroslawSekula/gitops-project.git
         dest: /home/ec2-user/gitops-project
         force: yes
 

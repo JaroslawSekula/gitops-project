@@ -6,7 +6,7 @@
 
   vars:
     compose_path: /usr/local/bin/docker-compose
-    repo_url: https://github.com/SkrytaModliszka/gitops-project.git
+    repo_url: https://github.com/JaroslawSekula/gitops-project.git
     repo_dir: /home/ec2-user/gitops-project
     docker_dir: /home/ec2-user/gitops-project/docker
 

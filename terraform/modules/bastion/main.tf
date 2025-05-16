@@ -43,11 +43,12 @@ resource "aws_instance" "ec2_instance" {
   user_data = <<-EOF
                   #!/bin/bash       
                   yum install ansible nc -y
-                  cd /home/ec2-user/ && git clone https://github.com/SkrytaModliszka/gitops-project.git
+                  cd /home/ec2-user/ && git clone https://github.com/JaroslawSekula/gitops-project.git
                   export ANSIBLE_HOST_KEY_CHECKING=False
 
                   ansible-playbook /home/ec2-user/gitops-project/ansible/playbooks/bastion/bastion_init.yaml
-                  ansible-playbook -i /home/ec2-user/gitops-project/ansible/dynamic_inventory.sh /home/ec2-user/gitops-project/ansible/playbooks/app/*
+                  ansible-playbook -i /home/ec2-user/gitops-project/ansible/dynamic_inventory.sh /home/ec2-user/gitops-project/ansible/playbooks/app/* --extra-vars "env=stage"
+                  ansible-playbook -i /home/ec2-user/gitops-project/ansible/dynamic_inventory.sh /home/ec2-user/gitops-project/ansible/playbooks/app/* --extra-vars "env=prod"
                 
                 EOF
   

@@ -1,6 +1,6 @@
 ---
 - name: Deploy latest version of vprofile-project
-  hosts: stage_app_instance
+  hosts: "{{ env }}_app_instance"
   remote_user: ec2-user
   become: yes
   tasks:
@@ -82,7 +82,7 @@
 
     - name: Clone git repository
       git:
-        repo: https://github.com/SkrytaModliszka/gitops-project.git
+        repo: https://github.com/JaroslawSekula/gitops-project.git
         dest: /home/ec2-user/gitops-project
         force: yes
 

@@ -6,6 +6,7 @@ dependency "vpc" {
     config_path = "../vpc"
     mock_outputs = {
         vpc_output = "mock-vpc-output"
+        private_subnet_id = "4739385"
         vpc_cidr = "0.0.0.0/0"
         vpc_id = "382757"
     }
@@ -13,9 +14,9 @@ dependency "vpc" {
 dependency "shared_vpc" {
     config_path = "../../../shared/${local.region_vars.inputs.region}/vpc"
     mock_outputs = {
-        vpc_output = "mock-vpc-output"
+        shared_vpc_output = "mock-shared_vpc-output"
         vpc_cidr = "0.0.0.0/0"
-        vpc_id = "382757"
+        private_subnet_id = "24827527"
     }
 }
 
@@ -29,9 +30,9 @@ include {
 
 inputs = {
     security_group_vpc_id = dependency.vpc.outputs.vpc_id
-    ec2_subnet_id = dependency.vpc.outputs.subnet_id
-    instance_type = "t2.small"
-    ec2_name_tag = "app"
+    ec2_subnet_id = dependency.vpc.outputs.private_subnet_id
+    instance_type = "t2.micro"
+    ec2_name_tag = "rabbitmq"
     ingress_rules = [
         {
             from_port = 22
@@ -40,14 +41,13 @@ inputs = {
             cidr = dependency.shared_vpc.outputs.vpc_cidr
         },
         {
-            from_port = 8080
-            to_port = 8080
+            from_port = 5672
+            to_port = 5672
             protocol = "tcp"
-            cidr = "0.0.0.0/0"
+            cidr = dependency.vpc.outputs.vpc_cidr
         }
     ]
-    ami = local.region_vars.inputs.ami
+    ami = "ami-084568db4383264d4"
     env = local.region_vars.inputs.env
     key_name = local.region_vars.inputs.key_name
-    public_ip = true
 }
