@@ -16,16 +16,6 @@ resource "aws_subnet" "subnet" {
   }
 }
 
-resource "aws_subnet" "subnet_for_alb" {
-  vpc_id = aws_vpc.vpc.id
-  cidr_block = var.alb_subnet_cidr
-  availability_zone = "us-east-1b"
-
-  tags = {
-    Name = "${var.env}_subnet_for_alb"
-  }
-}
-
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc.id
   
@@ -67,6 +57,7 @@ resource "aws_nat_gateway" "nat_gateway" {
 resource "aws_subnet" "private_subnet" {
   vpc_id = aws_vpc.vpc.id
   cidr_block = var.private_subnet_cidr
+  availability_zone = "us-east-1b"
 
   tags = {
     Name = "${var.env}_private_subnet"

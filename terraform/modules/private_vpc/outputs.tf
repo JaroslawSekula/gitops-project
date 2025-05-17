@@ -7,7 +7,7 @@ output "subnet_id" {
 output "subnet_ids" {
   value = [
     aws_subnet.subnet.id,
-    aws_subnet.subnet_for_alb.id
+    aws_subnet.private_subnet.id
    ]
 }
 output "private_subnet_id" {

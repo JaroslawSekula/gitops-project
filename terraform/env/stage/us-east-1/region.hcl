@@ -27,6 +27,8 @@ inputs = {
     key_name = local.key_name
     region = local.region
     ami = "ami-0f88e80871fd81e91"
+    public_key_path = file("${get_repo_root()}/ssh/public/bastion-key.pub")
+    public_ip = true
 }
 
 remote_state {

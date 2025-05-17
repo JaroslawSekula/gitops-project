@@ -20,7 +20,7 @@ dependency "vpc" {
     config_path = "../vpc"
     mock_outputs = {
         vpc_output = "mock-vpc-output"
-        private_subnet_id = "4739385"
+        subnet_id = "4739385"
         vpc_cidr = "0.0.0.0/0"
         vpc_id = "382757"
     }
@@ -29,7 +29,7 @@ dependency "shared_vpc" {
     config_path = "../../../shared/${local.region_vars.inputs.region}/vpc"
     mock_outputs = {
         vpc_output = "mock-vpc-output"
-        private_subnet_id = "4739385"
+        subnet_id = "4739385"
         vpc_cidr = "0.0.0.0/0"
         vpc_id = "382757"
     }
@@ -45,7 +45,7 @@ include {
 
 inputs = {
     security_group_vpc_id = dependency.vpc.outputs.vpc_id
-    ec2_subnet_id = dependency.vpc.outputs.private_subnet_id
+    ec2_subnet_id = dependency.vpc.outputs.subnet_id
     instance_type = "t2.small"
     ec2_name_tag = "app"
     ingress_rules = [
@@ -66,5 +66,4 @@ inputs = {
     env = local.region_vars.inputs.env
     key_name = local.region_vars.inputs.key_name
     instance_profile = dependency.profile.outputs.profile
-    public_ip = true
 }

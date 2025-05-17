@@ -15,7 +15,9 @@ dependency "dev_vpc"{
         vpc_cidr = "0.0.0.0/0"
     }
 }
-
+include {
+  path = find_in_parent_folders("region.hcl")
+}
 terraform {
     source = "../../../../modules/peering"
 }

@@ -11,11 +11,6 @@
     docker_dir: /home/ec2-user/gitops-project/docker
 
   tasks:
-    - name: Ensure git is installed
-      yum:
-        name: git
-        state: present
-
     - name: Clone Git repository
       git:
         repo: "{{ repo_url }}"
