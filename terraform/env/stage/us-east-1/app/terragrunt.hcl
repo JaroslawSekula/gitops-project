@@ -66,4 +66,5 @@ inputs = {
     env = local.region_vars.inputs.env
     key_name = local.region_vars.inputs.key_name
     instance_profile = dependency.profile.outputs.profile
+    public_ip = true
 }

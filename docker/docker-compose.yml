@@ -1,15 +1,18 @@
 services:
-  vprodb:
+  database:
     build: 
       context: ./Docker-files/db
     image: vprocontainers/vprofiledb
-    container_name: vprodb
+    container_name: database
     ports:
       - "3306:3306"
     volumes:
       - vprodbdata:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=vprodbpass
+      - MYSQL_ROOT_PASSWORD=admin123
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin123
+      - MYSQL_DATABASE=accounts
 
   vprocache01:
     image: memcached
