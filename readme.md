@@ -1,3 +1,5 @@
+# Diagram
+![GitOps project diagram](infrastructure_diagram.png)
 # Wymagania
 - AWS cli
 - Terraform
