@@ -1,3 +1,5 @@
+# Omówienie
+- https://youtu.be/JwoHlQnjnRU
 # Diagram
 ![GitOps project diagram](infrastructure_diagram.png)
 # Wymagania

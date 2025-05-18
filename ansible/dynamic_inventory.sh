@@ -2,34 +2,34 @@
 
 REGION="us-east-1"
 
-# Pobierz dane EC2: prywatny IP + tag Name
+
 INSTANCES=$(aws ec2 describe-instances \
   --region "$REGION" \
   --filters Name=instance-state-name,Values=running \
   --query "Reservations[*].Instances[*].[PrivateIpAddress, Tags[?Key=='Name']|[0].Value]" \
   --output json)
 
-# Inicjalizacja struktur
+
 declare -A HOSTVARS
 prod=()
 dev=()
 stage=()
 
-# Przetwórz dane
+
 for row in $(echo "$INSTANCES" | jq -c '.[][]'); do
   ip=$(echo "$row" | jq -r '.[0]')
   name=$(echo "$row" | jq -r '.[1]')
   lname=$(echo "$name" | tr '[:upper:]' '[:lower:]')
 
-  # Pomiń nieprawidłowe wpisy lub bastiony
+
   if [[ -z "$ip" || -z "$name" || "$lname" == *bastionhost* ]]; then
     continue
   fi
 
-  # Dodaj do hostvars
+
   HOSTVARS["$name"]="{\"ansible_host\": \"$ip\"}"
 
-  # Grupowanie wg nazwy
+
   if [[ "$lname" == *prod* ]]; then
     prod+=("$name")
   elif [[ "$lname" == *dev* ]]; then
@@ -39,7 +39,7 @@ for row in $(echo "$INSTANCES" | jq -c '.[][]'); do
   fi
 done
 
-# Funkcja pomocnicza do formatowania tablicy jako JSON array
+
 join_array() {
   local result=""
   for item in "$@"; do
@@ -51,7 +51,7 @@ join_array() {
   echo "$result"
 }
 
-# Zbuduj sekcje hostów
+
 prod_hosts=$(join_array "${prod[@]}")
 [[ -z "$prod_hosts" ]] && prod_hosts="" || prod_hosts="$prod_hosts"
 
@@ -61,7 +61,7 @@ dev_hosts=$(join_array "${dev[@]}")
 stage_hosts=$(join_array "${stage[@]}")
 [[ -z "$stage_hosts" ]] && stage_hosts="" || stage_hosts="$stage_hosts"
 
-# Wypisz inventory w formacie JSON
+
 echo "{"
 echo "  \"_meta\": {"
 echo "    \"hostvars\": {"
