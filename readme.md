@@ -4,6 +4,7 @@
 - AWS cli
 - Terraform
 - Terragrunt
+- SSH key
 # Technologie
 - AWS
 - Jenkins
